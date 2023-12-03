@@ -17,17 +17,44 @@ FROM theloai
 LEFT JOIN baiviet ON theloai.ma_tloai = baiviet.ma_tloai
 WHERE baiviet.ma_bviet IS NULL;
 --d
-
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai, baiviet.ngayviet
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai;
 --e
-
+SELECT theloai.ma_tloai, theloai.ten_tloai, COUNT(baiviet.ma_bviet) AS total_baiviet
+FROM theloai
+LEFT JOIN baiviet ON theloai.ma_tloai = baiviet.ma_tloai
+GROUP BY theloai.ma_tloai, theloai.ten_tloai
+ORDER BY total_baiviet DESC
+LIMIT 1;
 --f
-
+SELECT tacgia.ma_tgia, tacgia.ten_tgia, COUNT(baiviet.ma_bviet) AS total_baiviet
+FROM tacgia
+LEFT JOIN baiviet ON tacgia.ma_tgia = baiviet.ma_tgia
+GROUP BY tacgia.ma_tgia, tacgia.ten_tgia
+ORDER BY total_baiviet DESC
+LIMIT 2;
 --g
-
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai, baiviet.ngayviet
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai
+WHERE baiviet.tieude LIKE '%yêu%' OR baiviet.tieude LIKE '%thương%' OR baiviet.tieude LIKE '%anh%' OR baiviet.tieude LIKE '%em%'
+OR baiviet.ten_bhat LIKE '%yêu%' OR baiviet.ten_bhat LIKE '%thương%' OR baiviet.ten_bhat LIKE '%anh%' OR baiviet.ten_bhat LIKE '%em%';
 --h
-
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai, baiviet.ngayviet
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai
+WHERE baiviet.tieude LIKE '%yêu%' OR baiviet.tieude LIKE '%thương%' OR baiviet.tieude LIKE '%anh%' OR baiviet.tieude LIKE '%em%'
+OR baiviet.ten_bhat LIKE '%yêu%' OR baiviet.ten_bhat LIKE '%thương%' OR baiviet.ten_bhat LIKE '%anh%' OR baiviet.ten_bhat LIKE '%em%';
 --i
-
+CREATE VIEW vw_Music AS
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai;
 --j
 CREATE PROCEDURE sp_DSBaiViet (
     IN ten_tloai_param VARCHAR(50)
