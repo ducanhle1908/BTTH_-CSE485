@@ -1,9 +1,20 @@
 --a
-
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai, baiviet.ngayviet
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai
+WHERE theloai.ten_tloai = 'Nhạc trữ tình';
 --b
-
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai, baiviet.ngayviet
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai
+WHERE tacgia.ten_tgia = 'Nhacvietplus';
 --c
-
+SELECT theloai.ma_tloai, theloai.ten_tloai
+FROM theloai
+LEFT JOIN baiviet ON theloai.ma_tloai = baiviet.ma_tloai
+WHERE baiviet.ma_bviet IS NULL;
 --d
 
 --e
