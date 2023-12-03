@@ -2,18 +2,18 @@ CREATE DATABASE BTTH01_CSE485
 
 CREATE TABLE tacgia (
     ma_tgia INT UNSIGNED PRIMARY KEY,
-    ten_tgia VARCHAR(100) NOT NULL,
+    ten_tgia NVARCHAR(100) NOT NULL,
     hinh_tgia VARCHAR(100)
 );
 CREATE TABLE theloai (
     ma_tloai INT UNSIGNED PRIMARY KEY,
-    ten_tloai VARCHAR(50) NOT NULL
+    ten_tloai NVARCHAR(50) NOT NULL
 );
 
 CREATE TABLE baiviet (
     ma_bviet INT UNSIGNED PRIMARY KEY,
-    tieude VARCHAR(200) NOT NULL,
-    ten_bhat VARCHAR(100) NOT NULL,
+    tieude NVARCHAR(200) NOT NULL,
+    ten_bhat NVARCHAR(100) NOT NULL,
     ma_tloai INT UNSIGNED NOT NULL,
     tomtat TEXT NOT NULL,
     noidung TEXT,
