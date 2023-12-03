@@ -1,0 +1,102 @@
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai, baiviet.ngayviet
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai
+WHERE theloai.ten_tloai = 'Nhạc trữ tình';
+
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai, baiviet.ngayviet
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai
+WHERE tacgia.ten_tgia = 'Nhacvietplus';
+
+SELECT theloai.ma_tloai, theloai.ten_tloai
+FROM theloai
+LEFT JOIN baiviet ON theloai.ma_tloai = baiviet.ma_tloai
+WHERE baiviet.ma_bviet IS NULL;
+
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai, baiviet.ngayviet
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai;
+
+SELECT theloai.ma_tloai, theloai.ten_tloai, COUNT(baiviet.ma_bviet) AS total_baiviet
+FROM theloai
+LEFT JOIN baiviet ON theloai.ma_tloai = baiviet.ma_tloai
+GROUP BY theloai.ma_tloai, theloai.ten_tloai
+ORDER BY total_baiviet DESC
+LIMIT 1;
+
+SELECT tacgia.ma_tgia, tacgia.ten_tgia, COUNT(baiviet.ma_bviet) AS total_baiviet
+FROM tacgia
+LEFT JOIN baiviet ON tacgia.ma_tgia = baiviet.ma_tgia
+GROUP BY tacgia.ma_tgia, tacgia.ten_tgia
+ORDER BY total_baiviet DESC
+LIMIT 2;
+
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai, baiviet.ngayviet
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai
+WHERE baiviet.tieude LIKE '%yêu%' OR baiviet.tieude LIKE '%thương%' OR baiviet.tieude LIKE '%anh%' OR baiviet.tieude LIKE '%em%'
+OR baiviet.ten_bhat LIKE '%yêu%' OR baiviet.ten_bhat LIKE '%thương%' OR baiviet.ten_bhat LIKE '%anh%' OR baiviet.ten_bhat LIKE '%em%';
+
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai, baiviet.ngayviet
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai
+WHERE baiviet.tieude LIKE '%yêu%' OR baiviet.tieude LIKE '%thương%' OR baiviet.tieude LIKE '%anh%' OR baiviet.tieude LIKE '%em%'
+OR baiviet.ten_bhat LIKE '%yêu%' OR baiviet.ten_bhat LIKE '%thương%' OR baiviet.ten_bhat LIKE '%anh%' OR baiviet.ten_bhat LIKE '%em%';
+
+CREATE VIEW vw_Music AS
+SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai
+FROM baiviet
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai;
+
+CREATE PROCEDURE sp_DSBaiViet
+    @ten_tloai NVARCHAR
+AS
+BEGIN
+    DECLARE @ma_tloai INT;
+
+    -- Lấy mã thể loại từ tên thể loại
+    SELECT @ma_tloai = ma_tloai FROM theloai WHERE ten_tloai = @ten_tloai;
+
+    -- Kiểm tra thể loại có tồn tại hay không
+    IF @ma_tloai IS NULL
+    BEGIN
+        RAISERROR('Thể loại không tồn tại.', 16, 1);
+RETURN;
+    END
+
+    -- Trả về danh sách bài viết của thể loại
+    SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, tacgia.ten_tgia, theloai.ten_tloai
+    FROM baiviet
+    JOIN tacgia ON
+    baiviet.ma_tgia = tacgia.ma_tgia
+    JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai
+    WHERE theloai.ma_tloai = @ma_tloai;
+END;
+
+
+-- Thêm cột SLBaiViet vào bảng theloai
+ALTER TABLE theloai
+ADD SLBaiViet INT;
+
+-- Tạo trigger tg_CapNhatTheLoai
+CREATE TRIGGER tg_CapNhatTheLoai
+ON baiviet
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    -- Cập nhật số lượng bài viết trong bảng theloai
+    UPDATE theloai
+    SET SLBaiViet = (SELECT COUNT(*) FROM baiviet WHERE baiviet.ma_tloai = theloai.ma_tloai);
+END;
+
+CREATE TABLE Users (
+    id INT PRIMARY KEY,
+    username NVARCHAR(50) NOT NULL,
+    password NVARCHAR(50) NOT NULL
+);
